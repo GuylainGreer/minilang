@@ -1,8 +1,19 @@
 #include <iostream>
+#include "executableeinary.h"
+#include "interpreter.h"
 
 int main()
 {
-    std::cout << "Hello World!\n";
+	ExecutableBinary binary;
+	std::size_t pos = 0;
+	binary.setas(pos, Instruction::Load2);
+	binary.setas<unsigned short>(pos, 16);
+	binary.setas(pos, Instruction::Store2);
+	binary.setas(pos, 0u);
+	binary.setas<Instruction>(pos, Instruction::Stop);
+
+	Interpreter interpreter;
+	interpreter.run(binary);
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
