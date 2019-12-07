@@ -38,5 +38,11 @@
     <ClInclude Include="iterators.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="standard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="minilang.ruleset" />
   </ItemGroup>
 </Project>

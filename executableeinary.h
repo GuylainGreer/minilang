@@ -3,8 +3,7 @@
 #include <vector>
 #include "advanced_enum.h"
 
-enum_((Instruction)(Stop)(Load1)(Load2)(Load4)(Store1)(Store2)(Store4)(Jump)
-				   (Add1)(Add2)(Add4I)(Add4F))
+enum_((Instruction)(Stop)(Load)(Store)(Jump)(AddI)(AddF)(Add2I)(Add2F)(SubI)(SubF)(Sub2I)(Sub2F)(PrintI)(PrintF)(MulI)(MulF)(Mul2I)(Mul2F))
 
 class ExecutableBinary
 {
@@ -36,7 +35,7 @@ public:
 	void setas(std::size_t & pos, T t)
 	{
 		if (_buffer.size() < pos + sizeof(T))
-			_buffer.resize((std::size_t)(1.4 * (pos + sizeof(T))));
+			_buffer.resize((std::size_t)(1.4 * double(pos + (std::size_t)sizeof(T))));
 		memcpy(_buffer.data() + pos, &t, sizeof(T));
 		pos += sizeof(T);
 	}

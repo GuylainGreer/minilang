@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Rules for minilang" Description="Code analysis rules for minilang.vcxproj." ToolsVersion="16.0">
+  <IncludeAll Action="Warning" />
+  <Rules AnalyzerId="Microsoft.Analyzers.NativeCodeAnalysis" RuleNamespace="Microsoft.Rules.Native">
+    <Rule Id="C26438" Action="None" />
+    <Rule Id="C26481" Action="None" />
+  </Rules>
+</RuleSet>

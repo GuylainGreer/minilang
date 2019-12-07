@@ -3,12 +3,41 @@
 #include <string>
 #include "iterators.h"
 
+constexpr std::size_t power_of_2(std::size_t n)
+{
+	n--;
+	n |= n >> 1;
+	n |= n >> 2;
+	n |= n >> 4;
+	n |= n >> 8;
+	n |= n >> 16;
+	return n + 1;
+}
+
+template <std::size_t>
+struct enum_type
+{
+	using type = unsigned;
+};
+
+template <>
+struct enum_type<256>
+{
+	using type = unsigned char;
+};
+
+template <>
+struct enum_type<65536>
+{
+	using type = unsigned short;
+};
+
 #define _def_enum(...) _def_enum_impl_ADD_END(_def_enum_impl_LIST __VA_ARGS__) }
 
 #define _def_enum_impl_ADD_END(...) _def_enum_impl_ADD_END2(__VA_ARGS__)
 #define _def_enum_impl_ADD_END2(...) __VA_ARGS__ ## _END
 
-#define _def_enum_impl_LIST(...) enum class __VA_ARGS__ { _def_enum_impl_LIST_1
+#define _def_enum_impl_LIST(...) enum class __VA_ARGS__ : unsigned char { _def_enum_impl_LIST_1
 
 #define _def_enum_impl_LIST_1(...) __VA_ARGS__ , _def_enum_impl_LIST_2
 #define _def_enum_impl_LIST_2(...) __VA_ARGS__ , _def_enum_impl_LIST_1
@@ -18,7 +47,7 @@
 #define _def_enum_impl_LIST_2_END
 
 template <class>
-struct EnumLength : std::integral_constant<unsigned, -1> {};
+struct EnumLength : std::integral_constant<unsigned, 0> {};
 
 #define _def_enum_length(...) _def_enum_length_impl_ADD_END(_def_enum_length_impl_LIST __VA_ARGS__) 0>{}
 
@@ -40,7 +69,7 @@ struct EnumLength : std::integral_constant<unsigned, -1> {};
 #define _def_enum_names_impl_ADD_END(...) _def_enum_names_impl_ADD_END2(__VA_ARGS__)
 #define _def_enum_names_impl_ADD_END2(...) __VA_ARGS__ ## _END
 
-#define _def_enum_names_impl_LIST(...) inline const std::string & ToString( __VA_ARGS__ e) { static std::string names[] = { _def_enum_names_impl_LIST_1
+#define _def_enum_names_impl_LIST(...) inline const std::string & ToString( __VA_ARGS__ e) noexcept { static std::string names[] = { _def_enum_names_impl_LIST_1
 
 #define _def_enum_names_impl_LIST_1(...) #__VA_ARGS__, _def_enum_names_impl_LIST_2
 #define _def_enum_names_impl_LIST_2(...) #__VA_ARGS__, _def_enum_names_impl_LIST_1
