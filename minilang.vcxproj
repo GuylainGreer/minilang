@@ -116,6 +116,7 @@
       <ConformanceMode>true</ConformanceMode>
       <EnablePREfast>true</EnablePREfast>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -151,6 +152,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -160,13 +162,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="compiler.cpp" />
     <ClCompile Include="executablebinary.cpp" />
     <ClCompile Include="interpreter.cpp" />
     <ClCompile Include="minilang.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ast.h" />
     <ClInclude Include="executableeinary.h" />
     <ClInclude Include="advanced_enum.h" />
+    <ClInclude Include="compiler.h" />
     <ClInclude Include="iterators.h" />
     <ClInclude Include="interpreter.h" />
     <ClInclude Include="standard.h" />
