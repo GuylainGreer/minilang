@@ -4,6 +4,9 @@
 #include <cstdint>
 #include <memory>
 #include <cassert>
+#include <vector>
+#include <iostream>
+#include <optional>
 
 namespace mtd
 {
@@ -29,6 +32,22 @@ namespace mtd
 	template <class T, class ErrorT = std::shared_ptr<Exception>>
 	struct ReturnValue
 	{
+		inline void swap(ReturnValue& left, ReturnValue& right)
+		{
+			if (left.success == right.success)
+			{
+				if (left.success)
+					std::swap(left.get_value(), right.get_value());
+				else
+					std::swap(left.get_error(), right.get_error());
+			}
+			else
+			{
+				auto tmp = std::move(left);
+				left = std::move(right);
+				right = std::move(tmp);
+			}
+		}
 		ReturnValue(T t)
 		{
 			new (value) T(std::move(t));
@@ -46,6 +65,27 @@ namespace mtd
 			else
 				rc<ErrorT*>(value)->~ErrorT();
 		}
+		ReturnValue(const ReturnValue& other)
+		{
+			success = other.success;
+			if (success)
+				get_value() = other.get_value();
+			else
+				get_error() = other.get_error();
+		}
+		ReturnValue(ReturnValue&& other)
+		{
+			success = std::move(other.success);
+			if (success)
+				get_value() = std::move(other.get_value());
+			else
+				get_error() = std::move(other.get_error());
+		}
+		ReturnValue& operator=(ReturnValue other)
+		{
+			swap(*this, other);
+			return *this;
+		}
 		T& get_value()
 		{
 			assert(success);
@@ -58,7 +98,12 @@ namespace mtd
 			return *rc<const T*>(value);
 		}
 
-		auto get_error() const
+		ErrorT& get_error()
+		{
+			assert(!success);
+			return *rc<ErrorT*>(value);
+		}
+		const ErrorT & get_error() const
 		{
 			assert(!success);
 			return *rc<const ErrorT*>(value);
@@ -80,9 +125,13 @@ namespace mtd
 			std::swap(left.value, right.value);
 		}
 
-		PointerWrapper() = default;
-		PointerWrapper(PointerWrapper&& other) :value(std::move(other.value)) {}
-		PointerWrapper(const PointerWrapper& other) :value(std::make_unique<T>(*other.value)) {}
+		PointerWrapper() = delete;
+		PointerWrapper(PointerWrapper&& other) :value(other.value.release()) {}
+		PointerWrapper(const PointerWrapper& other)
+		{
+			if (other.value)
+				value = std::make_unique<T>(*other.value);
+		}
 		template <class U, class = std::enable_if_t<!IsPointerWrapper<std::decay_t<U>>::value>>
 		PointerWrapper(U&& u) : value(std::make_unique<T>(std::forward<U>(u))) {}
 
@@ -98,4 +147,37 @@ namespace mtd
 	private:
 		std::unique_ptr<T> value;
 	};
+
+	template <class T>
+	std::ostream& operator<<(std::ostream& o, const PointerWrapper<T>& pw)
+	{
+		return o << pw.get();
+	}
+}
+
+template <class ... Args>
+std::ostream& operator<<(std::ostream& o, const std::tuple<Args...>& args)
+{
+	o << "tuple{";
+	auto helper = [&o](const auto& ... x) { (o << ... << x) << ", "; };
+	std::apply(helper, args);
+	return o << "}";
+}
+
+template <class ... Args>
+std::ostream& operator<<(std::ostream& o, const std::vector<Args...>& v)
+{
+	o << "v{";
+	for (const auto& vv : v)
+		o << vv << ", ";
+	return o << "}";
+}
+
+template <class ... Args>
+std::ostream& operator<<(std::ostream& o, const std::optional<Args...>& opt)
+{
+	if (opt)
+		return o << *opt;
+	else
+		return o << "[empty optional]";
 }

@@ -78,7 +78,26 @@ struct EnumLength : std::integral_constant<unsigned, 0> {};
 #define _def_enum_names_impl_LIST_1_END
 #define _def_enum_names_impl_LIST_2_END
 
-#define enum_(...) _def_enum(__VA_ARGS__) ; _def_enum_length(__VA_ARGS__) ; _def_enum_names(__VA_ARGS__)
+#define _def_is_advanced_enum(...) _def_is_advanced_enum_impl_ADD_END(_def_is_advanced_enum_impl_LIST __VA_ARGS__) > : std::true_type {}
+
+#define _def_is_advanced_enum_impl_ADD_END(...) _def_is_advanced_enum_impl_ADD_END2(__VA_ARGS__)
+#define _def_is_advanced_enum_impl_ADD_END2(...) __VA_ARGS__ ## _END
+
+#define _def_is_advanced_enum_impl_LIST(...) template <> struct is_advanced_enum< __VA_ARGS__ _def_is_advanced_enum_impl_LIST_1
+#define _def_is_advanced_enum_impl_LIST_1(...) _def_is_advanced_enum_impl_LIST_2
+#define _def_is_advanced_enum_impl_LIST_2(...) _def_is_advanced_enum_impl_LIST_1
+
+#define _def_is_advanced_enum_impl_LIST_END
+#define _def_is_advanced_enum_impl_LIST_1_END
+#define _def_is_advanced_enum_impl_LIST_2_END
+
+#define enum_(...) _def_enum(__VA_ARGS__) ; _def_enum_length(__VA_ARGS__) ; _def_enum_names(__VA_ARGS__) ; _def_is_advanced_enum(__VA_ARGS__) ;
+
+template <class>
+struct is_advanced_enum : std::false_type {};
+
+template <class T>
+constexpr bool is_advanced_enum_v = is_advanced_enum<T>::value;
 
 template <class Enum>
 std::size_t ENUM_LENGTH = EnumLength<Enum>::value;
@@ -98,3 +117,8 @@ struct EnumRange
 	EnumIterator<T> end() { return EnumIterator<T>(ENUM_LENGTH<T>); }
 };
 
+template <class T, class = std::enable_if_t<is_advanced_enum_v<T>>>
+std::ostream& operator<<(std::ostream& o, T t)
+{
+	return o << ToString(t);
+}
