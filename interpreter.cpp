@@ -117,6 +117,40 @@ void Interpreter::run(const ExecutableBinary & binary)
 			set_ram(accumulator, 0, mem1 - mem2);
 			break;
 		}
+		case Instruction::DivI:
+		{
+			auto address = binary.getas<mtd::Address>(pos);
+			auto mem = get_ram<mtd::Int>(ram, address);
+			auto acc = get_ram<mtd::Int>(accumulator, 0);
+			set_ram(accumulator, 0, mem / acc);
+			break;
+		}
+		case Instruction::DivF:
+		{
+			auto address = binary.getas<mtd::Address>(pos);
+			auto mem = get_ram<mtd::Float>(ram, address);
+			auto acc = get_ram<mtd::Float>(accumulator, 0);
+			set_ram(accumulator, 0, mem / acc);
+			break;
+		}
+		case Instruction::Div2I:
+		{
+			auto address = binary.getas<mtd::Address>(pos);
+			auto mem1 = get_ram<mtd::Int>(ram, address);
+			address = binary.getas<mtd::Address>(pos);
+			auto mem2 = get_ram<mtd::Int>(ram, address);
+			set_ram(accumulator, 0, mem1 / mem2);
+			break;
+		}
+		case Instruction::Div2F:
+		{
+			auto address = binary.getas<mtd::Address>(pos);
+			auto mem1 = get_ram<mtd::Float>(ram, address);
+			address = binary.getas<mtd::Address>(pos);
+			auto mem2 = get_ram<mtd::Float>(ram, address);
+			set_ram(accumulator, 0, mem1 / mem2);
+			break;
+		}
 		case Instruction::PrintI:
 		{
 			std::cout << get_ram<mtd::Int>(accumulator, 0) << std::endl;
@@ -158,6 +192,18 @@ void Interpreter::run(const ExecutableBinary & binary)
 			address = binary.getas<mtd::Address>(pos);
 			auto mem2 = get_ram<mtd::Float>(ram, address);
 			set_ram(accumulator, 0, mem1 * mem2);
+			break;
+		}
+		case Instruction::Int2Float:
+		{
+			set_ram(accumulator, 0,
+				mtd::Float(get_ram<mtd::Int>(accumulator, 0)));
+			break;
+		}
+		case Instruction::Float2Int:
+		{
+			set_ram(accumulator, 0,
+				mtd::Int(get_ram<mtd::Float>(accumulator, 0)));
 			break;
 		}
 		}

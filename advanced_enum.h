@@ -100,7 +100,7 @@ template <class T>
 constexpr bool is_advanced_enum_v = is_advanced_enum<T>::value;
 
 template <class Enum>
-std::size_t ENUM_LENGTH = EnumLength<Enum>::value;
+static const std::size_t ENUM_LENGTH = EnumLength<Enum>::value;
 
 template <class T>
 struct EnumIterator : RangeIterator<std::size_t>

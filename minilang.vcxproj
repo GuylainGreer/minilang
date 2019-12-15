@@ -164,6 +164,7 @@
   <ItemGroup>
     <ClCompile Include="compiler.cpp" />
     <ClCompile Include="executablebinary.cpp" />
+    <ClCompile Include="generator.cpp" />
     <ClCompile Include="interpreter.cpp" />
     <ClCompile Include="minilang.cpp" />
   </ItemGroup>
@@ -172,6 +173,7 @@
     <ClInclude Include="executableeinary.h" />
     <ClInclude Include="advanced_enum.h" />
     <ClInclude Include="compiler.h" />
+    <ClInclude Include="generator.h" />
     <ClInclude Include="iterators.h" />
     <ClInclude Include="interpreter.h" />
     <ClInclude Include="standard.h" />

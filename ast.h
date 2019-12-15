@@ -84,7 +84,6 @@ public:
 	template <class T, class = std::enable_if_t<!std::is_same_v<std::decay_t<T>,AST>>>
 	AST(T&& t) :tree(std::forward<T>(t)) {}
 	friend std::ostream& operator<<(std::ostream& o, const AST& ast);
-private:
 	std::variant<FloatTreeItem, IntTreeItem, IDTreeItem, FactorTreeItem, FunctionCallTreeItem, AssignmentTreeItem, StatementsTreeItem> tree;
 };
 
